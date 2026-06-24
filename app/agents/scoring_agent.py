@@ -13,13 +13,16 @@ def create_scoring_agent() -> Agent:
     return Agent(
         role="Candidate Scoring Agent",
         goal=(
-            "Compare the candidate profile against the job requirements and "
-            "produce a fit score from 0 to 100 with clear reasoning and identified skill gaps."
+            "Evaluate the candidate against the job requirements using three weighted metrics:"
+            "Domain Relevance (40%), Experience Level(35%), and Skills Match(25%)."
+            "Score each metric from 1 to 10 and calculate the final score out of 100"
         ),
         backstory=(
-            "You are an analytical hiring specialist who objectively evaluates candidates. "
-            "You never guess — you score based only on evidence found in the resume "
-            "versus the requirements extracted from the job description."
+            "You are an analytical hiring specialist who evaluates candidates using a structured "
+            "scoring framework. You never guess — you score based only on evidence found in the "
+            "resume versus the job requirements. You prioritize domain relevance above all else, "
+            "meaning a candidate with strong domain background but slightly less experience "
+            "should score higher than a candidate with more experience in an unrelated domain."
         ),
         llm=llm,
         verbose=True

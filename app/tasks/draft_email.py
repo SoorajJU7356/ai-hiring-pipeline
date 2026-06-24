@@ -1,30 +1,37 @@
 from crewai import Task
 from app.agents.communication_agent import create_communication_agent
 
-def create_draft_email_task(candidate_name: str, role_title: str, shortlisted: bool) -> Task:
-    if shortlisted:
+def create_draft_email_task(candidate_name: str, role_title: str, accepted: bool) -> Task:
+    if accepted:
         instruction = (
             f"Draft a warm, professional interview invitation email to {candidate_name} "
             f"for the role of {role_title}. "
-            f"Mention that they have been shortlisted and will be contacted shortly "
-            f"with interview details. Keep it concise and encouraging."
+            f"Mention that they have been shortlisted after a careful review of their profile. "
+            f"Let them know the HR team will follow up shortly with interview details. "
+            f"Keep it concise, encouraging, and personal. "
+            f"Do not mention any scores or metrics."
         )
     else:
         instruction = (
             f"Draft a polite, empathetic rejection email to {candidate_name} "
             f"for the role of {role_title}. "
-            f"Thank them for their time, wish them well, and keep it respectful. "
-            f"Do not mention specific reasons for rejection."
+            f"Thank them sincerely for their time and interest in the role. "
+            f"Let them know the team has decided to move forward with other candidates. "
+            f"Wish them well in their job search. "
+            f"Keep it respectful and warm. "
+            f"Do not mention any scores, metrics, or specific reasons for rejection."
         )
 
     return Task(
         description=instruction,
         expected_output=(
-            "A complete email with:\n"
-            "- Subject line\n"
-            "- Greeting\n"
-            "- Body (2-3 short paragraphs)\n"
-            "- Professional sign-off"
+            "A complete professional email in exactly this format:\n"
+            "SUBJECT: <subject line>\n"
+            "BODY:\n"
+            "<greeting>\n\n"
+            "<body paragraph 1>\n\n"
+            "<body paragraph 2>\n\n"
+            "<professional sign-off>"
         ),
         agent=create_communication_agent()
     )

@@ -17,9 +17,12 @@ def create_communication_agent() -> Agent:
             "if shortlisted, or a polite rejection if not selected."
         ),
         backstory=(
-            "You are an empathetic HR communication specialist. Your emails are warm, "
-            "professional, and clear. You never sound robotic or generic — "
-            "every email feels personally written for the candidate."
+            "You are an empathetic HR communication specialist with years of experience "
+            "writing candidate emails. Your emails are always warm, professional, and personal. "
+            "You never sound robotic or generic. For accepted candidates your email is "
+            "encouraging and clear about next steps. For rejected candidates your email is "
+            "respectful, appreciative of their time, and leaves them with a positive impression "
+            "of the company. You never mention specific scores or metrics in your emails."
         ),
         llm=llm,
         verbose=True
