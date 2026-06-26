@@ -11,12 +11,12 @@ def create_analyze_jd_task(jd_text: str) -> Task:
         ),
         expected_output=(
             "A structured summary with the following sections:\n"
-            "- Job Title\n"
-            "- Required Skills (list)\n"
-            "- Preferred Skills (list)\n"
-            "- Experience Required\n"
-            "- Education Requirements\n"
-            "- Key Responsibilities (list)"
+            "ROLE_TITLE: <exact job title from the JD>\n"
+            "Required Skills: <list>\n"
+            "Preferred Skills: <list>\n"
+            "Experience Required: <years>\n"
+            "Education Requirements: <details>\n"
+            "Key Responsibilities: <list>"
         ),
         agent=create_jd_analyst()
     )
