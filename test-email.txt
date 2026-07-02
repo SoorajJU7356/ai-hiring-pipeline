@@ -1,4 +1,0 @@
-testflymail@gmail.com
-password: testingtesting
-app password:ybog tmow ylwo atel
-check sent email in spam folder
