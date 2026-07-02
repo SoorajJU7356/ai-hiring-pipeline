@@ -130,3 +130,35 @@ def get_rejected_candidates() -> list:
     rows = cursor.fetchall()
     conn.close()
     return [dict(row) for row in rows]
+
+def delete_selected_candidate(candidate_id: int)-> bool:
+    conn=get_connection()
+    cursor=conn.cursor()
+    cursor.execute("DELETE FROM selected_candidates WHERE id=?", (candidate_id,))
+    conn.commit()
+    conn.close()
+    return cursor.rowcount >0
+
+def delete_rejected_candidate(candidate_id:int) ->bool:
+    conn=get_connection()
+    cursor=conn.cursor()
+    cursor.execute("DELETE FROM rejected_candidates WHERE id =?",(candidate_id,))
+    conn.commit()
+    conn.close()
+    return cursor.rowcount>0
+
+def delete_all_selected() -> bool:
+    conn=get_connection()
+    cursor=conn.cursor()
+    cursor.execute("DELETE FROM  selected_candidates")
+    conn.commit()
+    conn.close()
+    return True
+
+def delete_all_rejected() -> bool:
+    conn=get_connection()
+    cursor=conn.cursor()
+    cursor.execute("DELETE FROM rejected_candidates")
+    conn.commit()
+    conn.close()
+    return True

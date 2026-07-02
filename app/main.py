@@ -2,7 +2,7 @@ from fastapi import FastAPI, Form, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
 from app.crew import run_scoring_pipeline
 from app.tasks.draft_email import create_draft_email_task
-from app.utils.email_sender import send_email, parse_email_draft
+from app.utils.email_sender import send_email, parse_email_draft, get_email_config
 from app.utils.pdf_extractor import extract_text_from_pdf
 from app.utils.database import (
     init_db,
@@ -41,7 +41,24 @@ async def score_candidate(
         resume_text=resume_text
     )
     return result
-
+@app.post("/score-bulk")
+async def score_bulk(
+    jd_text: str = Form(...),
+    resume_pdfs: list[UploadFile] = File(...)
+):
+    results = []
+    for pdf in resume_pdfs:
+        try:
+            pdf_bytes = await pdf.read()
+            resume_text = extract_text_from_pdf(pdf_bytes)
+            result = run_scoring_pipeline(
+                jd_text=jd_text,
+                resume_text=resume_text
+            )
+            results.append(result)
+        except Exception as e:
+            results.append({"error": str(e), "filename": pdf.filename})
+    return results
 
 @app.post("/decide")
 async def decide(
@@ -57,7 +74,15 @@ async def decide(
     skill_gaps: str = Form(...),
     accepted: bool = Form(...)
 ):
-    task = create_draft_email_task(candidate_name, role_title, accepted)
+    config = get_email_config()
+
+    task = create_draft_email_task(
+        candidate_name=candidate_name,
+        role_title=role_title,
+        accepted=accepted,
+        sender_name=config["sender_name"],
+        company_name=config["company_name"]
+    )
     crew = Crew(
         agents=[task.agent],
         tasks=[task],
@@ -107,7 +132,6 @@ async def decide(
         "decision": "accepted" if accepted else "rejected"
     }
 
-
 @app.get("/selected")
 def list_selected():
     return get_selected_candidates()
@@ -117,6 +141,36 @@ def list_selected():
 def list_rejected():
     return get_rejected_candidates()
 
+@app.delete("/selected/{candidate_id}")
+def delete_selected(candidate_id: int):
+    from app.utils.database import delete_selected_candidate
+    success = delete_selected_candidate(candidate_id)
+    if success:
+        return {"message": "Candidate deleted successfully"}
+    return {"error": "Candidate not found"}
+
+
+@app.delete("/rejected/{candidate_id}")
+def delete_rejected(candidate_id: int):
+    from app.utils.database import delete_rejected_candidate
+    success = delete_rejected_candidate(candidate_id)
+    if success:
+        return {"message": "Candidate deleted successfully"}
+    return {"error": "Candidate not found"}
+
+
+@app.delete("/selected")
+def delete_all_selected_candidates():
+    from app.utils.database import delete_all_selected
+    delete_all_selected()
+    return {"message": "All selected candidates deleted"}
+
+
+@app.delete("/rejected")
+def delete_all_rejected_candidates():
+    from app.utils.database import delete_all_rejected
+    delete_all_rejected()
+    return {"message": "All rejected candidates deleted"}
 
 @app.get("/health")
 def health():

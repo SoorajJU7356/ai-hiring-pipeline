@@ -13,7 +13,7 @@ def create_score_candidate_task() -> Task:
             "3. Skills Match (weight: 25%) — How many of the required skills does the "
             "candidate have? Score 0-10.\n\n"
             "Calculate the weighted score as:\n"
-            "(Domain × 0.40 + Experience × 0.35 + Skills × 0.25) × 10\n\n"
+            "(Domain x 0.40 + Experience x 0.35 + Skills x 0.25) x 10\n\n"
             "Important: A candidate with high domain relevance should not be filtered out "
             "just because their experience is slightly below the requirement."
         ),
@@ -23,7 +23,10 @@ def create_score_candidate_task() -> Task:
             "EXPERIENCE_SCORE: <0-10>\n"
             "SKILLS_MATCH_SCORE: <0-10>\n"
             "WEIGHTED_SCORE: <0-100>\n"
-            "REASONING: <2-3 sentences explaining the scores>\n"
+            "REASONING:\n"
+            "- Domain: <one sentence about domain relevance>\n"
+            "- Experience: <one sentence about experience level>\n"
+            "- Skills: <one sentence about skills match>\n"
             "MATCHED_SKILLS: <comma separated list>\n"
             "SKILL_GAPS: <comma separated list>"
         ),
