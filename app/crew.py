@@ -2,7 +2,9 @@ from crewai import Crew, Process
 from app.tasks.analyze_jd import create_analyze_jd_task
 from app.tasks.screen_resume import create_screen_resume_task
 from app.tasks.score_candidate import create_score_candidate_task
+import json
 import re
+from app.schemas import ScoreReport
 
 
 def extract_field(text: str, label: str) -> str:
@@ -11,24 +13,14 @@ def extract_field(text: str, label: str) -> str:
 
 
 def parse_score_report(report: str) -> dict:
-    domain = extract_field(report, "DOMAIN_RELEVANCE_SCORE")
-    experience = extract_field(report, "EXPERIENCE_SCORE")
-    skills = extract_field(report, "SKILLS_MATCH_SCORE")
-    weighted = extract_field(report, "WEIGHTED_SCORE")
-    reasoning = extract_field(report, "REASONING")
-    matched = extract_field(report, "MATCHED_SKILLS")
-    gaps = extract_field(report, "SKILL_GAPS")
-
-    return {
-        "domain_relevance_score": int(domain) if domain.isdigit() else 0,
-        "experience_score": int(experience) if experience.isdigit() else 0,
-        "skills_match_score": int(skills) if skills.isdigit() else 0,
-        "weighted_score": float(weighted) if weighted else 0.0,
-        "reasoning": reasoning,
-        "matched_skills": matched,
-        "skill_gaps": gaps
-    }
-
+    fence = chr(96) * 3
+    cleaned = report.strip()
+    if cleaned.startswith(fence):
+        cleaned = cleaned.split(fence)[1]
+        if cleaned.startswith("json"):
+            cleaned = cleaned[4:]
+    data = json.loads(cleaned)
+    return ScoreReport(**data).model_dump()
 
 def run_scoring_pipeline(
     jd_text: str,

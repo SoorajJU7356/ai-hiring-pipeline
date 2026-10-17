@@ -18,17 +18,17 @@ def create_score_candidate_task() -> Task:
             "just because their experience is slightly below the requirement."
         ),
         expected_output=(
-            "A structured scoring report in exactly this format:\n"
-            "DOMAIN_RELEVANCE_SCORE: <0-10>\n"
-            "EXPERIENCE_SCORE: <0-10>\n"
-            "SKILLS_MATCH_SCORE: <0-10>\n"
-            "WEIGHTED_SCORE: <0-100>\n"
-            "REASONING:\n"
-            "- Domain: <one sentence about domain relevance>\n"
-            "- Experience: <one sentence about experience level>\n"
-            "- Skills: <one sentence about skills match>\n"
-            "MATCHED_SKILLS: <comma separated list>\n"
-            "SKILL_GAPS: <comma separated list>"
+            "Return ONLY a JSON object, no other text, in exactly this shape:\n"
+            "{\n"
+            '  "domain_relevance_score": <0-10>,\n'
+            '  "experience_score": <0-10>,\n'
+            '  "skills_match_score": <0-10>,\n'
+            '  "weighted_score": <0-100>,\n'
+            '  "reasoning": "<2-3 sentences covering domain, experience, skills>",\n'
+            '  "matched_skills": ["<skill>", "..."],\n'
+            '  "skill_gaps": ["<skill>", "..."]\n'
+            "}\n"
+            "No markdown, no code fences, no text before or after the JSON."
         ),
         agent=create_scoring_agent()
     )
