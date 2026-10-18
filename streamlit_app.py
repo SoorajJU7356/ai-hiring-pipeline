@@ -142,10 +142,10 @@ with tab1:
         col_a, col_b = st.columns(2)
         with col_a:
             st.subheader("Matched Skills")
-            st.success(result["matched_skills"])
+            st.success(", ".join(result["matched_skills"]) if isinstance(result["matched_skills"], list) else result["matched_skills"])
         with col_b:
             st.subheader("Skill Gaps")
-            st.warning(result["skill_gaps"])
+            st.warning(", ".join(result["skill_gaps"]) if isinstance(result["skill_gaps"], list) else result["skill_gaps"])
 
         st.divider()
         st.subheader("Human Review")
